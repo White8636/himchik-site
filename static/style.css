@@ -1,0 +1,88 @@
+/* Подключение шрифта Inter */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: #f9fcff;
+    color: #333;
+    line-height: 1.6;
+    padding: 0 16px;
+}
+
+header {
+    background-color: #e1f2ff;
+    padding: 16px 0;
+    margin-bottom: 24px;
+    border-bottom: 1px solid #ccc;
+}
+
+nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    list-style: none;
+}
+
+nav a {
+    text-decoration: none;
+    color: #007799;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: background 0.3s;
+}
+
+nav a:hover {
+    background-color: #cceeff;
+}
+
+main {
+    max-width: 960px;
+    margin: 0 auto;
+    padding-bottom: 40px;
+}
+
+section {
+    margin-bottom: 32px;
+    background: #ffffff;
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+h1, h2, h3 {
+    color: #114466;
+    margin-bottom: 12px;
+}
+
+ul {
+    padding-left: 20px;
+}
+
+footer {
+    text-align: center;
+    padding: 16px;
+    font-size: 14px;
+    color: #666;
+    background-color: #eef7fb;
+    border-top: 1px solid #ddd;
+}
+
+/* Адаптивность */
+@media (max-width: 600px) {
+    nav ul {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    section {
+        padding: 16px;
+    }
+}

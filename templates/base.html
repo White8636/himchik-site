@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Химчик — выездная химчистка</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.png') }}" type="image/png">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f2f7fa;
+            color: #333;
+        }
+
+        header, nav, footer {
+            background-color: #e0f0f4;
+            padding: 10px 20px;
+            text-align: center;
+        }
+
+        nav a {
+            color: #007b8a;
+            margin: 0 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        main {
+            padding: 20px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        footer {
+            font-size: 14px;
+            color: #666;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            nav a {
+                display: block;
+                margin: 10px 0;
+            }
+
+            main {
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Химчик</h1>
+        <p>Выездная химчистка мебели и ковров</p>
+    </header>
+
+    <nav>
+        <a href="/">Главная</a>
+        <a href="/about">Обо мне</a>
+        <a href="/services">Услуги</a>
+        <a href="/form">Заявка</a>
+        <a href="/gallery">Галерея</a>
+        <a href="/trust">Почему мы</a>
+        <a href="/contact">Контакты</a>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer>
+        <p>© {{ current_year }} Химчик. Все права защищены.</p>
+    </footer>
+</body>
+</html>
