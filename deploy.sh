@@ -9,8 +9,8 @@ BACKUP_DIR="/opt/backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_FILE="$BACKUP_DIR/himchik_backup_$TIMESTAMP.tar.gz"
 LOG_FILE="$APP_DIR/deploy.log"
-TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "your_telegram_token")
-TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "your_chat_id")
+TELEGRAM_TOKEN=${TELEGRAM_TOKEN:-your_telegram_token}
+TELEGRAM_CHAT_ID=${TELEGRAM_CHAT_ID:-your_chat_id}
 
 echo "🚀 [$TIMESTAMP] Начинаем деплой..." | tee -a "$LOG_FILE"
 

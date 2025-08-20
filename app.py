@@ -2,8 +2,9 @@ from flask import Flask, render_template, request, redirect
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
-import requests
 import telebot  # импорт бота
+from telebot.util import escape_markdown
+from telebot.apihelper import ApiException
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -11,11 +12,21 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 # Настройки Telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "your_telegram_token")
 TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "your_chat_id")
+WEBHOOK_URL = os.getenv("WEBHOOK_URL", "https://example.com/telegram")
+TELEGRAM_SECRET_TOKEN = os.getenv("TELEGRAM_SECRET_TOKEN", "your_secret_token")
+
+if TELEGRAM_TOKEN == "your_telegram_token" or TELEGRAM_CHAT_ID == "your_chat_id":
+    raise RuntimeError("TELEGRAM_TOKEN или TELEGRAM_CHAT_ID не установлены")
+
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 
 @app.route('/telegram', methods=['POST'])
 def telegram_webhook():
+    secret_token = request.headers.get('X-Telegram-Bot-Api-Secret-Token')
+    if secret_token != TELEGRAM_SECRET_TOKEN:
+        return 'forbidden', 403
+
     json_str = request.get_data().decode('utf-8')
     update = telebot.types.Update.de_json(json_str)
     bot.process_new_updates([update])
@@ -94,26 +105,24 @@ def form():
     return render_template('form.html')
 
 def send_text_to_telegram(text):
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendMessage"
-    payload = {
-        'chat_id': TELEGRAM_CHAT_ID,
-        'text': text,
-        'parse_mode': 'Markdown'
-    }
-    requests.post(url, data=payload)
+    try:
+        escaped_text = escape_markdown(text, version=2)
+        bot.send_message(TELEGRAM_CHAT_ID, escaped_text, parse_mode='MarkdownV2')
+    except ApiException as e:
+        app.logger.error(f"Error sending message: {e}")
 
 def send_photo_to_telegram(filepath):
-    url = f"https://api.telegram.org/bot{TELEGRAM_TOKEN}/sendPhoto"
-    with open(filepath, 'rb') as photo:
-        payload = {'chat_id': TELEGRAM_CHAT_ID}
-        files = {'photo': photo}
-        requests.post(url, data=payload, files=files)
+    try:
+        with open(filepath, 'rb') as photo:
+            bot.send_photo(TELEGRAM_CHAT_ID, photo)
+    except (ApiException, OSError) as e:
+        app.logger.error(f"Error sending photo: {e}")
 
 if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
     bot.remove_webhook()
-    bot.set_webhook(url='https://himchik.ru/telegram')
+    bot.set_webhook(url=WEBHOOK_URL, secret_token=TELEGRAM_SECRET_TOKEN)
 
     app.run(debug=True)
