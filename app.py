@@ -9,8 +9,8 @@ app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 # Настройки Telegram
-TELEGRAM_TOKEN = '7665022364:AAHp7Zeey557c2waxfXfAVWTgXqE4qJt0C8'
-TELEGRAM_CHAT_ID = '404748283'
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "your_telegram_token")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID", "your_chat_id")
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
 
