@@ -8,6 +8,11 @@
 pip install -r requirements.txt
 python app.py
 ```
+Перед запуском создайте файл окружения и укажите свои ключи:
+
+```bash
+cp .env.example .env
+# заполните TELEGRAM_TOKEN и TELEGRAM_CHAT_ID в .env
 
 ## Деплой
 
