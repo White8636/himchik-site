@@ -2,12 +2,15 @@ from flask import Flask, render_template, request, redirect
 from werkzeug.utils import secure_filename
 from datetime import datetime
 import os
+from dotenv import load_dotenv
 import telebot  # импорт бота
 from telebot.util import escape_markdown
 from telebot.apihelper import ApiException
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
+
+load_dotenv()
 
 # Настройки Telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "your_telegram_token")
@@ -81,16 +84,16 @@ def form():
             return "Вы должны согласиться на обработку персональных данных.", 400
 
         # Кликабельный номер
-        text = (
-            f"[{phone}](tel:{phone}) {name}\n"
-            f"{entrance}-{floor}-{apartment} - {intercom}\n\n"
-            f"{message}\n\n"
-        )
+    text = (
+        f"[{phone}](tel:{phone}) {md2(name)}\n"
+        f"{md2(entrance)}-{md2(floor)}-{md2(apartment)} - {md2(intercom)}\n\n"
+        f"{md2(message)}\n\n"
+     )
 
-        if services_text:
-            text += f"{services_text}\n"
+    if services:
+        text += "\n".join(f"✔️ {md2(s)}" for s in services) + "\n"
 
-        send_text_to_telegram(text)
+        bot.send_message(TELEGRAM_CHAT_ID, text, parse_mode="MarkdownV2")
 
         for file in files[:10]:
             if file:

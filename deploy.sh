@@ -20,7 +20,7 @@ echo "🚀 [$TIMESTAMP] Начинаем деплой..." | tee -a "$LOG_FILE"
 
 echo "💾 Создание резервной копии..." | tee -a "$LOG_FILE"
 mkdir -p "$BACKUP_DIR"
-tar -czf "$BACKUP_FILE" "$APP_DIR" --exclude "$BACKUP_DIR"
+tar -czf "$BACKUP_FILE" --exclude="$BACKUP_DIR" "$APP_DIR"
 echo "✅ Бэкап сохранён: $BACKUP_FILE" | tee -a "$LOG_FILE"
 
 # Оставить только 5 последних бэкапов
@@ -50,6 +50,12 @@ python3 -m py_compile app.py || {
 
 echo "🔁 Перезапуск systemd-сервиса..." | tee -a "$LOG_FILE"
 systemctl restart himchik
+
+if [[ -n "${WEBHOOK_URL:-}" && -n "${TELEGRAM_TOKEN:-}" && -n "${TELEGRAM_SECRET_TOKEN:-}" ]]; then
+  curl -s "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook" \
+    -d url="${WEBHOOK_URL}" \
+    -d secret_token="${TELEGRAM_SECRET_TOKEN}" >/dev/null || true
+fi
 
 sleep 3
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000)

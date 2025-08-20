@@ -12,6 +12,5 @@ MarkupSafe==3.0.2
 packaging==25.0
 pyTelegramBotAPI==4.27.0
 requests==2.32.4
-telebot==0.0.5
 urllib3==2.5.0
 Werkzeug==3.1.3

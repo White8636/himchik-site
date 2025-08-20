@@ -13,6 +13,8 @@ python app.py
 ```bash
 cp .env.example .env
 # заполните TELEGRAM_TOKEN и TELEGRAM_CHAT_ID в .env
+# заполните TELEGRAM_TOKEN, TELEGRAM_CHAT_ID,
+# WEBHOOK_URL и TELEGRAM_SECRET_TOKEN в .env
 
 ## Деплой
 

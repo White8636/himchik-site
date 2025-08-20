@@ -17,6 +17,8 @@ cd /opt/himchik
 ```bash
 export TELEGRAM_TOKEN="your_telegram_token"
 export TELEGRAM_CHAT_ID="your_chat_id"
+export WEBHOOK_URL="https://example.com/telegram"
+export TELEGRAM_SECRET_TOKEN="your_secret_token"
 ```
 
 ### Что делает `deploy.sh`:
