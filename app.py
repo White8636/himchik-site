@@ -27,6 +27,11 @@ if TELEGRAM_TOKEN == "your_telegram_token" or TELEGRAM_CHAT_ID == "your_chat_id"
 
 bot = telebot.TeleBot(TELEGRAM_TOKEN)
 
+@bot.message_handler(commands=["start"])
+def handle_start(message):
+    """Reply to the /start command."""
+    bot.reply_to(message, "Привет! Отправьте заявку через форму или напишите сообщение.")
+
 
 @app.route('/telegram', methods=['POST'])
 def telegram_webhook():
@@ -125,14 +130,14 @@ def send_photo_to_telegram(filepath):
     except (ApiException, OSError) as e:
         app.logger.error(f"Error sending photo: {e}")
 
-if __name__ == '__main__':
-    if not os.path.exists(app.config['UPLOAD_FOLDER']):
-        os.makedirs(app.config['UPLOAD_FOLDER'])
-
-        app.run(debug=True)
+def ensure_upload_folder():
+    """Create upload folder if it doesn't exist."""
+    if not os.path.exists(app.config["UPLOAD_FOLDER"]):
+        os.makedirs(app.config["UPLOAD_FOLDER"])
 
 if __name__ == "__main__":
-    import os
+    ensure_upload_folder()
+
     mode = os.getenv("MODE", "POLLING").upper()
     if mode == "POLLING":
         try:
@@ -141,8 +146,9 @@ if __name__ == "__main__":
             pass
         bot.infinity_polling(skip_pending=True, timeout=30)
     else:
-        # если когда-нибудь вернёшься к вебхуку — сюда придёт запуск Flask
-        from os import getenv
-        port = int(getenv("PORT", "8000"))
-        # В проде debug=False, чтобы не было авто-рестартов
+       try:
+            bot.set_webhook(url=WEBHOOK_URL, secret_token=TELEGRAM_SECRET_TOKEN)
+        except ApiException as e:
+            app.logger.error(f"Error setting webhook: {e}")
+        port = int(os.getenv("PORT", "8000"))
         app.run(host="0.0.0.0", port=port, debug=False)
