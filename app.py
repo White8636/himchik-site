@@ -129,20 +129,20 @@ if __name__ == '__main__':
     if not os.path.exists(app.config['UPLOAD_FOLDER']):
         os.makedirs(app.config['UPLOAD_FOLDER'])
 
-    bot.remove_webhook()
-    bot.set_webhook(url=WEBHOOK_URL, secret_token=TELEGRAM_SECRET_TOKEN)
-
-    app.run(debug=True)
+        app.run(debug=True)
 
 if __name__ == "__main__":
     import os
-    # Локально/на сервере можно включать polling переменной окружения
-    if os.getenv("POLLING") == "1":
+    mode = os.getenv("MODE", "POLLING").upper()
+    if mode == "POLLING":
         try:
             bot.remove_webhook()
         except Exception:
             pass
         bot.infinity_polling(skip_pending=True, timeout=30)
     else:
-        # если вдруг оставляешь Flask — он поднимет порт 8000, но для polling это не нужно
-        app.run(host="0.0.0.0", port=8000, debug=False)
+        # если когда-нибудь вернёшься к вебхуку — сюда придёт запуск Flask
+        from os import getenv
+        port = int(getenv("PORT", "8000"))
+        # В проде debug=False, чтобы не было авто-рестартов
+        app.run(host="0.0.0.0", port=port, debug=False)
