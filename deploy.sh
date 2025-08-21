@@ -5,6 +5,13 @@
 ### ────────────────────────────────
 
 APP_DIR="/opt/himchik"
+
+if [[ -f "$APP_DIR/.env" ]]; then
+  set -a
+  . "$APP_DIR/.env"
+  set +a
+fi
+
 BACKUP_DIR="/opt/backups"
 TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 BACKUP_FILE="$BACKUP_DIR/himchik_backup_$TIMESTAMP.tar.gz"

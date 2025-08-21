@@ -1,18 +1,13 @@
-# Ignore bot credentials
-himchik-bot-*.json
+# env
+.env
+*.env
 
-# Python
+# python
 __pycache__/
-*.pyc
+*.py[cod]
 
-# Virtual environments
+# venv
 venv/
 
-# Uploads
-uploads/
-
-# Logs
+# logs
 *.log
-
-# Environment files
-.env
