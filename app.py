@@ -4,13 +4,17 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 import telebot  # импорт бота
-from telebot.util import escape_markdown
+from telebot.formatting import escape_markdown
 from telebot.apihelper import ApiException
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 
 load_dotenv()
+
+def md2(text: str) -> str:
+    """Escape text for Telegram MarkdownV2."""
+    return escape_markdown(text or "", version=2)
 
 # Настройки Telegram
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN", "your_telegram_token")
