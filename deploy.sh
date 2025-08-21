@@ -55,14 +55,15 @@ python3 -m py_compile app.py || {
 ### 🔁 5. Перезапуск сервиса
 ### ────────────────────────────────
 
-echo "🔁 Перезапуск systemd-сервиса..." | tee -a "$LOG_FILE"
-systemctl restart himchik
-
-if [[ -n "${WEBHOOK_URL:-}" && -n "${TELEGRAM_TOKEN:-}" && -n "${TELEGRAM_SECRET_TOKEN:-}" ]]; then
-  curl -s "https://api.telegram.org/bot${TELEGRAM_TOKEN}/setWebhook" \
-    -d url="${WEBHOOK_URL}" \
-    -d secret_token="${TELEGRAM_SECRET_TOKEN}" >/dev/null || true
+echo "🔁 Перезапуск systemd-сервиса..."
+if systemctl restart chistkanadomu-bot 2>>"$LOG_FILE"; then
+  echo "✅ Сервис перезапущен" | tee -a "$LOG_FILE"
+else
+  echo "⚠️ systemd недоступен — запускаю через nohup" | tee -a "$LOG_FILE"
+  pkill -f app.py || true
+  nohup "$APP_DIR/venv/bin/python" "$APP_DIR/app.py" > "$APP_DIR/bot.log" 2>&1 &
 fi
+
 
 sleep 3
 STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://127.0.0.1:8000)
